@@ -1,0 +1,19 @@
+
+export type Delete$NAME$Input = {};
+
+export type Delete$NAME$Data = {
+  message: string;
+};
+
+export const delete$NAME$ = async (
+  input: Delete$NAME$Input
+): Promise<Delete$NAME$Data> => {
+  const res = await fetch(`${API_V4_URL}${API_RESSOURCE}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  const json = await res.json();
+  return json.data as Delete$NAME$Data;
+};

@@ -1,0 +1,27 @@
+import Joi from 'joi';
+import { query } from '@/database/provider';
+import {
+  BaseApiHandler,
+  ExecutionContext,
+  HandlerResult,
+} from '@/lib/api/BaseApiHandler';
+import type { Post$NAME$Input } from './controller';
+
+type Input = Post$NAME$Input;
+
+class Post$NAME$Handler extends BaseApiHandler<Input> {
+  protected requiresSession = true;
+  protected permissions: string[] = ['permission'];
+  protected schema = Joi.object<Input>({
+    firstname: Joi.string().optional(),
+  }).min(1);
+
+  execute = async ({ input, params }: ExecutionContext<Input>) => {
+    return {
+      message: '',
+    };
+  };
+}
+
+export const post$NAME$Handler = new Post$NAME$Handler();
+export type Post$NAME$Data = HandlerResult<typeof post$NAME$Handler>;

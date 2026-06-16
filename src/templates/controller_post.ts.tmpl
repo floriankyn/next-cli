@@ -1,0 +1,20 @@
+
+export type Post$NAME$Input = {};
+
+export type Post$NAME$Data = {
+  message: string;
+};
+
+export const post$NAME$ = async (
+  input: Post$NAME$Input
+): Promise<Post$NAME$Data> => {
+  const res = await fetch(`${API_V4_URL}${API_RESSOURCE}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(input),
+  });
+  const json = await res.json();
+  return json.data as Post$NAME$Data;
+};

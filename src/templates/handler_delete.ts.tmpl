@@ -1,0 +1,27 @@
+import Joi from 'joi';
+import { query } from '@/database/provider';
+import {
+  BaseApiHandler,
+  ExecutionContext,
+  HandlerResult,
+} from '@/lib/api/BaseApiHandler';
+import type { Delete$NAME$Input } from './controller';
+
+type Input = Delete$NAME$Input;
+
+class Delete$NAME$Handler extends BaseApiHandler<Input> {
+  protected requiresSession = true;
+  protected permissions: string[] = ['permission'];
+  protected schema = Joi.object<Input>({
+    firstname: Joi.string().optional(),
+  }).min(1);
+
+  execute = async ({ input, params }: ExecutionContext<Input>) => {
+    return {
+      message: '',
+    };
+  };
+}
+
+export const delete$NAME$Handler = new Delete$NAME$Handler();
+export type Delete$NAME$Data = HandlerResult<typeof delete$NAME$Handler>;

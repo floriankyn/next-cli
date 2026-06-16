@@ -1,0 +1,20 @@
+
+export type Put$NAME$Input = {};
+
+export type Put$NAME$Data = {
+  message: string;
+};
+
+export const put$NAME$ = async (
+  input: Put$NAME$Input
+): Promise<Put$NAME$Data> => {
+  const res = await fetch(`${API_V4_URL}${API_RESSOURCE}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(input),
+  });
+  const json = await res.json();
+  return json.data as Put$NAME$Data;
+};

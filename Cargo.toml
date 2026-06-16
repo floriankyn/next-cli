@@ -1,0 +1,16 @@
+[package]
+name = "next"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "next"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+thiserror = "2"
+heck = "0.5"
+
+[dev-dependencies]
+tempfile = "3"
