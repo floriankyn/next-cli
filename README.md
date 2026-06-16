@@ -20,7 +20,7 @@ Requires a [Rust toolchain](https://rustup.rs) (Rust 1.74+ / edition 2021).
 Install the `next` binary onto your `PATH` with Cargo:
 
 ```sh
-git clone <this-repo> next-cli
+git clone https://github.com/floriankyn/next-cli next-cli
 cd next-cli
 cargo install --path .
 ```
