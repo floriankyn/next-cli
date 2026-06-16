@@ -18,4 +18,7 @@ pub enum CliError {
         #[source]
         source: std::io::Error,
     },
+
+    #[error("update failed: {0}")]
+    Update(String),
 }

@@ -15,8 +15,12 @@ use std::path::PathBuf;
     about = "Scaffold Next.js App-Router API handlers"
 )]
 pub struct Cli {
+    /// Update `next` in place to the latest GitHub release, then exit.
+    #[arg(long)]
+    pub update: bool,
+
     #[command(subcommand)]
-    pub command: Command,
+    pub command: Option<Command>,
 }
 
 #[derive(Subcommand, Debug)]

@@ -16,7 +16,7 @@ no external files to manage at runtime.
 ## Install
 
 Prebuilt binaries are published on every release — no Rust toolchain needed.
-Pick your platform below. Replace `0.1.0` with the
+Pick your platform below. Replace `0.2.0` with the
 [latest version](https://github.com/floriankyn/next-cli/releases/latest) if
 newer.
 
@@ -29,7 +29,7 @@ download.
 ### macOS — Apple Silicon (M1/M2/M3/M4)
 
 ```sh
-VERSION=0.1.0
+VERSION=0.2.0
 curl -L "https://github.com/floriankyn/next-cli/releases/download/v${VERSION}/next-v${VERSION}-aarch64-apple-darwin.tar.gz" | tar xz
 sudo mv next /usr/local/bin/        # or: mv next /usr/local/bin/next-scaffold
 next --help
@@ -47,7 +47,7 @@ Not sure which Mac you have? Run `uname -m` — `arm64` means Apple Silicon,
 ### macOS — Intel (classic)
 
 ```sh
-VERSION=0.1.0
+VERSION=0.2.0
 curl -L "https://github.com/floriankyn/next-cli/releases/download/v${VERSION}/next-v${VERSION}-x86_64-apple-darwin.tar.gz" | tar xz
 sudo mv next /usr/local/bin/        # or: mv next /usr/local/bin/next-scaffold
 next --help
@@ -58,7 +58,7 @@ Same Gatekeeper note as above (`xattr -d com.apple.quarantine ...`).
 ### Linux
 
 ```sh
-VERSION=0.1.0
+VERSION=0.2.0
 # x86_64 (most desktops/servers). For ARM64 use: aarch64-unknown-linux-gnu
 curl -L "https://github.com/floriankyn/next-cli/releases/download/v${VERSION}/next-v${VERSION}-x86_64-unknown-linux-gnu.tar.gz" | tar xz
 sudo mv next /usr/local/bin/        # or ~/.local/bin to avoid sudo
@@ -75,7 +75,7 @@ next --help
 PowerShell (x86_64):
 
 ```powershell
-$Version = "0.1.0"
+$Version = "0.2.0"
 $Url = "https://github.com/floriankyn/next-cli/releases/download/v$Version/next-v$Version-x86_64-pc-windows-msvc.zip"
 Invoke-WebRequest -Uri $Url -OutFile next.zip
 Expand-Archive next.zip -DestinationPath "$env:LOCALAPPDATA\next-cli" -Force
@@ -101,18 +101,31 @@ cargo install --path .       # from a cloned checkout -> ~/.cargo/bin/next
 
 ## Update
 
-Re-run the same install command for your platform with the new version number
-(bump `VERSION` / `$Version`) — it overwrites the existing binary in place.
-
-With Cargo:
+The easiest way — `next` updates itself in place from the latest GitHub
+release:
 
 ```sh
-cargo binstall next          # picks up the latest published version
-# or, from an updated checkout:
-git pull && cargo install --path . --force
+next --update
 ```
 
-Check what you have, then confirm after updating:
+It detects your platform, downloads the matching release archive, and swaps the
+running binary. If `next` lives somewhere root-owned (e.g. `/usr/local/bin`),
+run it with `sudo` so it can replace the file:
+
+```sh
+sudo next --update
+```
+
+Other ways:
+
+```sh
+cargo binstall next                       # if installed via Cargo
+git pull && cargo install --path . --force  # from an updated checkout
+```
+
+Or just re-run your platform's install command above with a newer `VERSION`.
+
+Check the version before/after:
 
 ```sh
 next --version
@@ -127,8 +140,8 @@ tag is pushed:
 ```sh
 # 1. bump `version` in Cargo.toml, commit
 # 2. tag and push — the tag must start with `v`
-git tag v0.1.0
-git push origin v0.1.0
+git tag v0.2.0
+git push origin v0.2.0
 ```
 
 The workflow cross-compiles for all six targets above, packages each binary

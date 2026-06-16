@@ -2,11 +2,12 @@
 //! filesystem, run, and map any `CliError` to a process exit code. This is the
 //! only place that touches `std::process::exit` or prints to stderr.
 
-use clap::Parser;
+use clap::{CommandFactory, Parser};
 use next::cli::args::{ApiAction, Cli, Command, CreateArgs};
 use next::error::CliError;
 use next::io::writer::RealFileSystem;
 use next::run::{run, RunReport};
+use next::update::update_to_latest;
 
 fn main() {
     let cli = Cli::parse();
@@ -17,10 +18,18 @@ fn main() {
 }
 
 fn dispatch(cli: &Cli) -> Result<(), CliError> {
+    if cli.update {
+        return update_to_latest();
+    }
     match &cli.command {
-        Command::Api { action } => match action {
+        Some(Command::Api { action }) => match action {
             ApiAction::Create(args) => create(args),
         },
+        // No subcommand and no --update: show help (and exit non-zero).
+        None => {
+            let _ = Cli::command().print_help();
+            std::process::exit(2);
+        }
     }
 }
 
