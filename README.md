@@ -13,36 +13,74 @@ The resource name is normalised to PascalCase and substituted for the `$NAME$`
 token in every template. Templates are compiled into the binary, so there are
 no external files to manage at runtime.
 
-## Setup
+## Install
+
+### Prebuilt binary (no Rust needed) — Linux, macOS, Windows
+
+Each release ships prebuilt archives on the
+[Releases page](https://github.com/floriankyn/next-cli/releases). Download the
+one for your platform, unpack it, and put the `next` binary on your `PATH`.
+
+| Platform | Archive |
+| --- | --- |
+| Linux x86_64 | `next-vX.Y.Z-x86_64-unknown-linux-gnu.tar.gz` |
+| Linux x86_64 (static) | `next-vX.Y.Z-x86_64-unknown-linux-musl.tar.gz` |
+| Linux ARM64 | `next-vX.Y.Z-aarch64-unknown-linux-gnu.tar.gz` |
+| macOS Intel | `next-vX.Y.Z-x86_64-apple-darwin.tar.gz` |
+| macOS Apple Silicon | `next-vX.Y.Z-aarch64-apple-darwin.tar.gz` |
+| Windows x86_64 | `next-vX.Y.Z-x86_64-pc-windows-msvc.zip` |
+
+```sh
+# Linux/macOS example
+curl -L https://github.com/floriankyn/next-cli/releases/latest/download/next-vX.Y.Z-x86_64-unknown-linux-gnu.tar.gz | tar xz
+sudo mv next /usr/local/bin/
+```
+
+Each archive has a matching `.sha256` file to verify the download.
+
+### With `cargo binstall` (fetches the prebuilt binary)
+
+```sh
+cargo binstall next
+```
+
+### From source with Cargo
 
 Requires a [Rust toolchain](https://rustup.rs) (Rust 1.74+ / edition 2021).
-
-Install the `next` binary onto your `PATH` with Cargo:
 
 ```sh
 git clone https://github.com/floriankyn/next-cli next-cli
 cd next-cli
-cargo install --path .
+cargo install --path .   # -> ~/.cargo/bin/next
 ```
 
-`cargo install` places the binary in `~/.cargo/bin` (make sure that's on your
-`PATH`). Verify:
+Verify any of the above:
 
 ```sh
 next --help
 next api create --help
 ```
 
-Prefer not to install globally? Build a local binary and run it directly:
+> Note: the binary is named `next`, which collides with the Next.js CLI if that
+> is also on your `PATH`. Rename it on install if needed
+> (e.g. `mv ~/.cargo/bin/next ~/.cargo/bin/next-scaffold`).
+
+## Cutting a release (maintainers)
+
+Releases are built automatically by
+[`.github/workflows/release.yml`](.github/workflows/release.yml) when a version
+tag is pushed:
 
 ```sh
-cargo build --release
-./target/release/next api create User
+# 1. bump `version` in Cargo.toml, commit
+# 2. tag and push — the tag must start with `v`
+git tag v0.1.0
+git push origin v0.1.0
 ```
 
-> Note: the binary is named `next`, which collides with the Next.js CLI if that
-> is also on your `PATH`. Run it by absolute path, or install under a different
-> name (e.g. `cargo install --path . && mv ~/.cargo/bin/next ~/.cargo/bin/next-scaffold`).
+The workflow cross-compiles for all six targets above, packages each binary
+with the README and a SHA256 checksum, and uploads them to the GitHub Release
+for that tag. No secrets to configure — it uses the built-in `GITHUB_TOKEN`.
 
 ## Usage
 

@@ -2,10 +2,25 @@
 name = "next"
 version = "0.1.0"
 edition = "2021"
+description = "Scaffold Next.js App-Router API handler files from templates"
+repository = "https://github.com/floriankyn/next-cli"
+license = "MIT"
+readme = "README.md"
 
 [[bin]]
 name = "next"
 path = "src/main.rs"
+
+# Lets `cargo binstall next` fetch the prebuilt archives produced by the
+# release workflow instead of compiling from source. The URL must match the
+# `archive: next-$tag-$target` naming there ($tag includes the leading `v`).
+[package.metadata.binstall]
+pkg-url = "{ repo }/releases/download/v{ version }/next-v{ version }-{ target }.{ archive-format }"
+bin-dir = "{ bin }{ binary-ext }"
+pkg-fmt = "tgz"
+
+[package.metadata.binstall.overrides.x86_64-pc-windows-msvc]
+pkg-fmt = "zip"
 
 [dependencies]
 clap = { version = "4", features = ["derive"] }
