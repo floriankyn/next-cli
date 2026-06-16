@@ -11,7 +11,19 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  # Create the GitHub Release once, up front. The build matrix below uploads
+  # into it. (If each matrix job tried to create the release, they race and the
+  # uploads fail with "release not found".)
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: taiki-e/create-gh-release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  upload-assets:
+    needs: create-release
     name: ${{ matrix.target }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -40,8 +52,8 @@ jobs:
           targets: ${{ matrix.target }}
 
       # Builds the `next` binary for the target, packages it into a .tar.gz
-      # (Unix) or .zip (Windows) alongside the README, generates a SHA256
-      # checksum, and uploads everything to the Release for this tag.
+      # (Unix) or .zip (Windows) alongside the README and LICENSE, generates a
+      # SHA256 checksum, and uploads everything to the Release for this tag.
       # taiki-e's action auto-uses `cross` for targets that need it
       # (musl, aarch64-linux), so no extra toolchain setup is required.
       - name: Build and upload
