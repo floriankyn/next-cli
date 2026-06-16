@@ -9,7 +9,11 @@ use clap::{Args, Parser, Subcommand};
 use std::path::PathBuf;
 
 #[derive(Parser, Debug)]
-#[command(name = "next", about = "Scaffold Next.js App-Router API handlers")]
+#[command(
+    name = "next",
+    version,
+    about = "Scaffold Next.js App-Router API handlers"
+)]
 pub struct Cli {
     #[command(subcommand)]
     pub command: Command,

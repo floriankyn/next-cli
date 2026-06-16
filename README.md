@@ -15,55 +15,108 @@ no external files to manage at runtime.
 
 ## Install
 
-### Prebuilt binary (no Rust needed) — Linux, macOS, Windows
+Prebuilt binaries are published on every release — no Rust toolchain needed.
+Pick your platform below. Replace `0.1.0` with the
+[latest version](https://github.com/floriankyn/next-cli/releases/latest) if
+newer.
 
-Each release ships prebuilt archives on the
-[Releases page](https://github.com/floriankyn/next-cli/releases). Download the
-one for your platform, unpack it, and put the `next` binary on your `PATH`.
+Each archive ships with a matching `.sha256` file you can use to verify the
+download.
 
-| Platform | Archive |
-| --- | --- |
-| Linux x86_64 | `next-vX.Y.Z-x86_64-unknown-linux-gnu.tar.gz` |
-| Linux x86_64 (static) | `next-vX.Y.Z-x86_64-unknown-linux-musl.tar.gz` |
-| Linux ARM64 | `next-vX.Y.Z-aarch64-unknown-linux-gnu.tar.gz` |
-| macOS Intel | `next-vX.Y.Z-x86_64-apple-darwin.tar.gz` |
-| macOS Apple Silicon | `next-vX.Y.Z-aarch64-apple-darwin.tar.gz` |
-| Windows x86_64 | `next-vX.Y.Z-x86_64-pc-windows-msvc.zip` |
+> The binary is named `next`, which collides with the Next.js CLI. If you use
+> Next.js, install it under a different name (each section notes where).
+
+### macOS — Apple Silicon (M1/M2/M3/M4)
 
 ```sh
-# Linux/macOS example
-curl -L https://github.com/floriankyn/next-cli/releases/latest/download/next-vX.Y.Z-x86_64-unknown-linux-gnu.tar.gz | tar xz
-sudo mv next /usr/local/bin/
-```
-
-Each archive has a matching `.sha256` file to verify the download.
-
-### With `cargo binstall` (fetches the prebuilt binary)
-
-```sh
-cargo binstall next
-```
-
-### From source with Cargo
-
-Requires a [Rust toolchain](https://rustup.rs) (Rust 1.74+ / edition 2021).
-
-```sh
-git clone https://github.com/floriankyn/next-cli next-cli
-cd next-cli
-cargo install --path .   # -> ~/.cargo/bin/next
-```
-
-Verify any of the above:
-
-```sh
+VERSION=0.1.0
+curl -L "https://github.com/floriankyn/next-cli/releases/download/v${VERSION}/next-v${VERSION}-aarch64-apple-darwin.tar.gz" | tar xz
+sudo mv next /usr/local/bin/        # or: mv next /usr/local/bin/next-scaffold
 next --help
-next api create --help
 ```
 
-> Note: the binary is named `next`, which collides with the Next.js CLI if that
-> is also on your `PATH`. Rename it on install if needed
-> (e.g. `mv ~/.cargo/bin/next ~/.cargo/bin/next-scaffold`).
+If macOS Gatekeeper blocks it ("cannot be opened"), clear the quarantine flag:
+
+```sh
+sudo xattr -d com.apple.quarantine /usr/local/bin/next
+```
+
+Not sure which Mac you have? Run `uname -m` — `arm64` means Apple Silicon,
+`x86_64` means Intel (next section).
+
+### macOS — Intel (classic)
+
+```sh
+VERSION=0.1.0
+curl -L "https://github.com/floriankyn/next-cli/releases/download/v${VERSION}/next-v${VERSION}-x86_64-apple-darwin.tar.gz" | tar xz
+sudo mv next /usr/local/bin/        # or: mv next /usr/local/bin/next-scaffold
+next --help
+```
+
+Same Gatekeeper note as above (`xattr -d com.apple.quarantine ...`).
+
+### Linux
+
+```sh
+VERSION=0.1.0
+# x86_64 (most desktops/servers). For ARM64 use: aarch64-unknown-linux-gnu
+curl -L "https://github.com/floriankyn/next-cli/releases/download/v${VERSION}/next-v${VERSION}-x86_64-unknown-linux-gnu.tar.gz" | tar xz
+sudo mv next /usr/local/bin/        # or ~/.local/bin to avoid sudo
+next --help
+```
+
+- **ARM64** (Raspberry Pi, ARM servers): swap the file for
+  `next-v${VERSION}-aarch64-unknown-linux-gnu.tar.gz`.
+- **Older / minimal distros** (glibc errors): use the fully static musl build,
+  `next-v${VERSION}-x86_64-unknown-linux-musl.tar.gz`.
+
+### Windows
+
+PowerShell (x86_64):
+
+```powershell
+$Version = "0.1.0"
+$Url = "https://github.com/floriankyn/next-cli/releases/download/v$Version/next-v$Version-x86_64-pc-windows-msvc.zip"
+Invoke-WebRequest -Uri $Url -OutFile next.zip
+Expand-Archive next.zip -DestinationPath "$env:LOCALAPPDATA\next-cli" -Force
+# add it to PATH for the current user
+[Environment]::SetEnvironmentVariable(
+  "Path",
+  [Environment]::GetEnvironmentVariable("Path", "User") + ";$env:LOCALAPPDATA\next-cli",
+  "User")
+```
+
+Open a new terminal, then run `next --help`. To avoid the Next.js CLI clash,
+rename `next.exe` to `next-scaffold.exe` inside `%LOCALAPPDATA%\next-cli`.
+
+### Alternative: install with Cargo
+
+If you already have a [Rust toolchain](https://rustup.rs) (Rust 1.74+):
+
+```sh
+cargo binstall next          # downloads the prebuilt binary, any OS
+# or build from source:
+cargo install --path .       # from a cloned checkout -> ~/.cargo/bin/next
+```
+
+## Update
+
+Re-run the same install command for your platform with the new version number
+(bump `VERSION` / `$Version`) — it overwrites the existing binary in place.
+
+With Cargo:
+
+```sh
+cargo binstall next          # picks up the latest published version
+# or, from an updated checkout:
+git pull && cargo install --path . --force
+```
+
+Check what you have, then confirm after updating:
+
+```sh
+next --version
+```
 
 ## Cutting a release (maintainers)
 
